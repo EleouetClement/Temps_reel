@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Basic.shader" />
+    <None Include="Notes\Notes.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependances\GLEW\lib\Release\x64\glew32.lib" />
