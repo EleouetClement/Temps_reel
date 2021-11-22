@@ -8,6 +8,6 @@ Il est possible de set un uniform avant chaque drawCall
 par exemple avant le **glDrawElements**
 
 ### Vertex arrays objects (vao)
+Permet de lier des vertex buffers avec une specification 
 
-Permet de lier des vertex buffers avec une specification
 
