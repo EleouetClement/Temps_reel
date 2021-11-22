@@ -125,15 +125,13 @@ int main(void)
     //Affihce la version opengl utilisée par le GPU
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    
+    //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
     float positions[12] =
     {
         -0.5f, -0.5f,
          0.5f,  -0.5f,
          0.5f, 0.5f,
-
          -0.5f, 0.5f,
-
     };
 
     //Eq au tableau de triangles sur Unity
@@ -178,6 +176,7 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
+        //DrawCall de la fonction
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);//On met nullptr car on a bind le tableau d'indices
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
