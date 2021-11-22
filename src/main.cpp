@@ -126,12 +126,23 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
 
     
-    float positions[6] =
+    float positions[12] =
     {
         -0.5f, -0.5f,
-         0.0f,  0.5f,
-         0.5f, -0.5f,
+         0.5f,  -0.5f,
+         0.5f, 0.5f,
+
+         -0.5f, 0.5f,
+
     };
+
+    //Eq au tableau de triangles sur Unity
+    unsigned int indices[6] =
+    {
+        0, 1, 2,
+        2, 3, 0
+    };
+
     unsigned int buffer;
 
     //Declaration du buffer
@@ -139,19 +150,27 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);//Permet de specifier de que l'on veut voir affiché
 
     //Specification de la taille du buffer
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2* sizeof(float), positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);//Permet de specifier de que l'on veut voir affiché
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+
+
     ShaderSources source = ParseShader("shaders/Basic.shader");
-    std::cout << "VERTEX" << std::endl;
+
+    /*std::cout << "VERTEX" << std::endl;
     std::cout << source.VertexSource << std::endl;
     std::cout << "FRAGMENT" << std::endl;
-    std::cout << source.FragmentSource << std::endl;
-
-    /*unsigned int shader = createShader(vertexShader, fragmentShader);
-    glUseProgram(shader);*/
+    std::cout << source.FragmentSource << std::endl;*/
+    
+    unsigned int shader = createShader(source.VertexSource, source.FragmentSource);
+    glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -159,15 +178,14 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
         
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);//On met nullptr car on a bind le tableau d'indices
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
     }
-    //glDeleteProgram(shader);
+    glDeleteProgram(shader);
     glfwTerminate();
     return 0;
 }
