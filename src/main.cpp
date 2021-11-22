@@ -2,11 +2,54 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
-
-
-static void ParseShader(const std::string& filePath)
+struct ShaderSources
 {
+    std::string VertexSource;
+    std::string FragmentSource;
+};
+
+
+static ShaderSources ParseShader(const std::string& filePath)
+{
+    std::ifstream stream(filePath);
+    
+    enum class ShaderType
+    {
+        NONE = -1, VERTEX = 0, FRAGMENT = 1
+    };
+
+    std::string line;
+    std::stringstream ss[2];
+    ShaderType type = ShaderType::NONE;
+    while (getline(stream, line))
+    {
+        if (line.find("#shader") != std::string::npos)
+        {
+            if (line.find("vertex") != std::string::npos)
+            {
+                //Set mod to vertex
+                type = ShaderType::VERTEX;
+
+            }
+            else
+            {
+                if (line.find("fragment") != std::string::npos)
+                {
+                    //Set mod to fragment
+                    type = ShaderType::FRAGMENT;
+                }
+            }
+        }
+        else
+        {
+            ss[(int)type] << line << '\n';
+        }
+    }
+    return { ss[0].str(), ss[1].str() };
 
 }
 static unsigned int CompileShader(unsigned int type, const std::string &source)
@@ -101,9 +144,14 @@ int main(void)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
+    ShaderSources source = ParseShader("shaders/Basic.shader");
+    std::cout << "VERTEX" << std::endl;
+    std::cout << source.VertexSource << std::endl;
+    std::cout << "FRAGMENT" << std::endl;
+    std::cout << source.FragmentSource << std::endl;
 
-    unsigned int shader = createShader(vertexShader, fragmentShader);
-    glUseProgram(shader);
+    /*unsigned int shader = createShader(vertexShader, fragmentShader);
+    glUseProgram(shader);*/
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -119,7 +167,7 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
-    glDeleteProgram(shader);
+    //glDeleteProgram(shader);
     glfwTerminate();
     return 0;
 }
