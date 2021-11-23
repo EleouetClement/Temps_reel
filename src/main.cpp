@@ -169,12 +169,9 @@ int main(void)
 
         //Specification de la taille du buffer
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-        //VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
-        GLCall(glEnableVertexAttribArray(0));
-        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
-        /*GLCall(glEnableVertexAttribArray(0));
+       /* GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));*/
 
         //IndexBuffer ib(indices, 6);
@@ -189,17 +186,17 @@ int main(void)
         unsigned int shader = createShader(source.VertexSource, source.FragmentSource);
         GLCall(glUseProgram(shader));
 
-        //recuperation de l'uniform dans le shader
-        GLCall(int location = glGetUniformLocation(shader, "u_Color"));//retourne la position du Uniform voulu ou -1 si le Uniform n'a pas été trouvé
-        ASSERT(location != -1);
-        GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
+        const auto index = glGetAttribLocation(shader, "position");
+        GLCall(glEnableVertexAttribArray(index));
+        GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0));
+
 
 
         //Desynchronisation des elements
-        GLCall(glBindVertexArray(0));
+        /*GLCall(glBindVertexArray(0));
         GLCall(glUseProgram(0));
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));*/
         float r = 0.0f;
         float increment = 0.05f;
         /* Loop until the user closes the window */
@@ -207,15 +204,15 @@ int main(void)
         {
             /* Render here */
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            glClearColor(1.0f, 0.2f, 0.2f, 1.0f);
 
-
-            GLCall(glUseProgram(shader));
-            GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
-            GLCall(glBindVertexArray(vao));
+            //GLCall(glUseProgram(shader));
+            //GLCall(glBindVertexArray(vao));
             //ib.Bind();
 
             //DrawCall de la fonction
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
+            //GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
+            GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));//On met nullptr car on a bind le tableau d'indices
             if (r > 1.0f)
             {
                 increment = -0.05f;
