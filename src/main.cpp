@@ -1,11 +1,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
+#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-
+#include<vector>
 #include "Renderer.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
@@ -16,7 +17,11 @@ struct ShaderSources
     std::string VertexSource;
     std::string FragmentSource;
 };
-
+struct Vertex
+{
+    glm::vec3 position;
+    glm::vec3 couleur;
+};
 
 static ShaderSources ParseShader(const std::string& filePath)
 {
@@ -139,12 +144,11 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
     {//Ce scope permet de detruire les variable avant le glterminate pour qu'il qu'openGL ne detecte pas d'erreur
         //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
-        float positions[12] =
+        std::vector<Vertex> vertices =
         {
-            -0.5f, -0.5f,
-             0.5f,  -0.5f,
-             0.5f, 0.5f,
-             -0.5f, 0.5f,
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}
         };
 
         //Eq au tableau de triangles sur Unity
@@ -158,15 +162,22 @@ int main(void)
         GLCall(glGenVertexArrays(1, &vao));
         GLCall(glBindVertexArray(vao));
 
-
+        unsigned int vertexBuff;
         //Declaration du buffer
+        glGenBuffers(1, &vertexBuff);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);//Permet de specifier de que l'on veut voir affiché
 
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        //Specification de la taille du buffer
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+        //VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
         GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
-        IndexBuffer ib(indices, 6);
+        /*GLCall(glEnableVertexAttribArray(0));
+        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));*/
+
+        //IndexBuffer ib(indices, 6);
 
         ShaderSources source = ParseShader("shaders/Basic.shader");
 
@@ -201,7 +212,7 @@ int main(void)
             GLCall(glUseProgram(shader));
             GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
             GLCall(glBindVertexArray(vao));
-            ib.Bind();
+            //ib.Bind();
 
             //DrawCall de la fonction
             GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices

@@ -31,6 +31,7 @@
   <ItemGroup>
     <None Include="shaders\Basic.shader" />
     <None Include="Notes\Notes.md" />
+    <None Include="Notes\Notes_cours.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependances\GLEW\lib\Release\x64\glew32.lib" />
@@ -52,5 +53,13 @@
     <ClInclude Include="src\VertexBufferLayout.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Notes\Axe.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="Notes\Perspective.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
