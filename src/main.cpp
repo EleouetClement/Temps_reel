@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include<vector>
+#include<cstddef>
 #include "Renderer.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
@@ -146,9 +147,9 @@ int main(void)
         //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
         std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}}
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}},
+            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}},
+            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}}
         };
 
         //Eq au tableau de triangles sur Unity
@@ -187,8 +188,11 @@ int main(void)
         GLCall(glUseProgram(shader));
 
         const auto index = glGetAttribLocation(shader, "position");
+        const auto indexCouleur = glGetAttribLocation(shader, "color_in");
         GLCall(glEnableVertexAttribArray(index));
-        GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0));
+        GLCall(glEnableVertexAttribArray(indexCouleur));
+        GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(struct Vertex, Vertex::position)));
+        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::couleur));
 
 
 
