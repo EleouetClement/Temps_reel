@@ -11,6 +11,7 @@
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h";
+#include "VertexBufferLayout.h"
 
 int main(void)
 {
@@ -90,21 +91,18 @@ int main(void)
         ib.unBind();
         float r = 0.0f;
         float increment = 0.05f;
+
+        Renderer renderer;
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
-            /* Render here */
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
+            renderer.Clear();
 
             shader.Bind();
             shader.SetUniform4f("u_Color" , r, 0.3f, 0.8f, 1.0f);
 
-            va.Bind();
-            ib.Bind();
-
-            //DrawCall de la fonction
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
+            renderer.Draw(va, ib, shader);
             if (r > 1.0f)
             {
                 increment = -0.05f;
@@ -119,10 +117,10 @@ int main(void)
 
             r += increment;
             /* Swap front and back buffers */
-            GLCall(glfwSwapBuffers(window));
+            glfwSwapBuffers(window);
 
             /* Poll for and process events */
-            GLCall(glfwPollEvents());
+            glfwPollEvents();
         }
     }
     glfwTerminate();
