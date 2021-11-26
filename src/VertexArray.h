@@ -1,6 +1,6 @@
 #pragma once
 #include"VertexBuffer.h"
-
+#include"VertexBufferLayout.h"
 
 
 
@@ -12,5 +12,5 @@ public:
 	VertexArray();
 	~VertexArray();
 
-	void AddBuffer(const VertexBuffer& vb, const VertexBuuferLayout& layout);
+	void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 };

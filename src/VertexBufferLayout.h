@@ -1,12 +1,24 @@
 #pragma once
 #include <vector>
 #include <GL/glew.h>
+#include "Renderer.h"
 
 struct VertexBufferElement
 {
 	unsigned int type;
 	unsigned int count;
-	bool normalized;
+	unsigned char normalized;
+	static unsigned int GetSizeOfType(unsigned int type)
+	{
+		switch (type)
+		{
+			case GL_FLOAT: return 4;
+			case GL_UNSIGNED_INT: return 4;
+			case GL_UNSIGNED_BYTE: return 1;
+		}
+		ASSERT(false);
+		return 0;
+	}
 };
 
 
@@ -15,8 +27,10 @@ class VertexBufferLayout
 private:
 
 	std::vector<VertexBufferElement> m_Elements;
+	unsigned int m_Stride; 
 public:
-	VertexBufferLayout();
+	VertexBufferLayout()
+	: m_Stride(0) {}
 
 
 	template<typename T>
@@ -28,7 +42,27 @@ public:
 	template<>
 	void Push<float>(int count)
 	{
-		VertexBufferElement pouet = { GL_FLOAT, count, false };
+		VertexBufferElement pouet = { GL_FLOAT, count, GL_FALSE };
 		m_Elements.push_back(pouet);
+		m_Stride += VertexBufferElement::GetSizeOfType(GL_FLOAT);
 	}
+
+	template<>
+	void Push<unsigned int>(int count)
+	{
+		VertexBufferElement	pouet = { GL_UNSIGNED_INT, count, GL_FALSE };
+		m_Elements.push_back(pouet);
+		m_Stride += VertexBufferElement::GetSizeOfType(GL_UNSIGNED_INT);
+
+	}
+	template<>
+	void Push<unsigned char>(int count)
+	{
+		VertexBufferElement	pouet = { GL_UNSIGNED_BYTE, count, GL_TRUE };
+		m_Elements.push_back(pouet);
+		m_Stride += VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
+	}
+
+	inline const std::vector<VertexBufferElement> GetElements() const { return m_Elements; }
+	inline unsigned int GetStride() const { return m_Stride; }
 };
