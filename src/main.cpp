@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -22,6 +23,8 @@ struct Vertex
 {
     glm::vec3 position;
     glm::vec3 couleur;
+    glm::vec2 uvs;
+    glm::vec3 normals;
 };
 
 static ShaderSources ParseShader(const std::string& filePath)
@@ -147,9 +150,9 @@ int main(void)
         //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
         std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}},
-            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}},
-            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}}
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
+            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
+            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}}
         };
 
         //Eq au tableau de triangles sur Unity
@@ -193,6 +196,8 @@ int main(void)
         GLCall(glEnableVertexAttribArray(indexCouleur));
         GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(struct Vertex, Vertex::position)));
         glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::couleur));
+        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::uvs));
+        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::normals));
 
 
 

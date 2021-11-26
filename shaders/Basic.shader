@@ -3,6 +3,8 @@
 
 in vec3 position;
 in vec3 color_in;
+in vec2 uvs_in;
+in vec3 normals_in;
 out vec3 color_out;
 
 void main()
