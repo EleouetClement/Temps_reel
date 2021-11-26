@@ -11,3 +11,10 @@ par exemple avant le **glDrawElements**
 Permet de lier des vertex buffers avec une specification 
 
 
+
+## Textures
+
+Basiquement c'est une image que l'on peut utiliser quand on veut *render* un scene
+
+
+
