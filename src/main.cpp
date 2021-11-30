@@ -12,7 +12,53 @@
 #include "Renderer.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
+#include "stb_image.h"
 
+
+
+static void error_callback(int /*error*/, const char* description)
+{
+    std::cerr << "Error: " << description << std::endl;
+}
+
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+    std::string severitystr;
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_NOTIFICATION:
+        severitystr = "NOTIF";
+        break;
+    case GL_DEBUG_SEVERITY_LOW:
+        severitystr = "WARN";
+        break;
+    case GL_DEBUG_SEVERITY_MEDIUM:
+        severitystr = "ERROR";
+        break;
+    case GL_DEBUG_SEVERITY_HIGH:
+        severitystr = "FATAL";
+        break;
+    default:
+        severitystr = "UNKNOWN";
+        break;
+    }
+
+    std::cout << "[OPENGL " << severitystr << "](" << type << ") : " << message << std::endl;
+
+    if (severity == GL_DEBUG_SEVERITY_MEDIUM || severity == GL_DEBUG_SEVERITY_HIGH) {
+        std::cout << "Breaking execution because an error was raised above medium severity!" << std::endl;
+        __debugbreak();
+    }
+}
+void APIENTRY opengl_error_callback(GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
+{
+    std::cout << message << std::endl;
+}
 
 struct ShaderSources
 {
@@ -113,7 +159,7 @@ static unsigned int createShader(const std::string &vertexShader, const std::str
 int main(void)
 {
     GLFWwindow* window;
-
+    
     /* Initialize the library */
     if (!glfwInit())
         return -1;
@@ -124,7 +170,7 @@ int main(void)
 
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -142,20 +188,20 @@ int main(void)
     {
         std::cout << "Error" << std::endl;
     }
-
-
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(MessageCallback, 0);
     //Affihce la version opengl utilisée par le GPU
     std::cout << glGetString(GL_VERSION) << std::endl;
     {//Ce scope permet de detruire les variable avant le glterminate pour qu'il qu'openGL ne detecte pas d'erreur
         //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
         std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}}
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
+            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
+            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
+            {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
+            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}}
 
         };
 
@@ -195,14 +241,36 @@ int main(void)
         GLCall(glUseProgram(shader));
 
         const auto index = glGetAttribLocation(shader, "position");
-        const auto indexCouleur = glGetAttribLocation(shader, "color_in");
-        GLCall(glEnableVertexAttribArray(index));
-        GLCall(glEnableVertexAttribArray(indexCouleur));
+        //const auto indexCouleur = glGetAttribLocation(shader, "color_in");
+        const auto uvs = glGetAttribLocation(shader, "uvs_in");
+        //const auto normals = glGetAttribLocation(shader, "normals_in");
+        
         GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(struct Vertex, Vertex::position)));
-        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::couleur));
-        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::uvs));
-        glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::normals));
+        //glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::couleur));
+        glVertexAttribPointer(uvs, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::uvs));
+        //glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::normals));
+        GLCall(glEnableVertexAttribArray(index));
+        //GLCall(glEnableVertexAttribArray(indexCouleur));
+        GLCall(glEnableVertexAttribArray(uvs));
+        //GLCall(glEnableVertexAttribArray(normals));
 
+        int width, height, nbChannels;
+        stbi_set_flip_vertically_on_load(1);
+        const unsigned char* image = stbi_load("Textures/crusader.png", &width, &height, &nbChannels, 0);
+        if (!image)
+        {
+            std::cout << "Image non chargée!" << std::endl;
+            return -1;
+        }
+        unsigned int texture;
+        glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+        glTextureStorage2D(texture, 1, GL_RGB8, width, height);
+        glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+        glBindTextureUnit(0, texture);
+
+        unsigned int sampler = glGetUniformLocation(shader, "color_texture");
+        glUniform1i(sampler, 0);
 
 
         //Desynchronisation des elements

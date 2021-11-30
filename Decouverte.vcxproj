@@ -148,6 +148,7 @@
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
   <ItemGroup>
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
@@ -169,6 +171,8 @@
   <ItemGroup>
     <Image Include="Notes\Axe.png" />
     <Image Include="Notes\Perspective.png" />
+    <Image Include="Textures\crusader.png" />
+    <Image Include="Textures\rouge.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

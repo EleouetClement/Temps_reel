@@ -27,6 +27,9 @@
     <ClCompile Include="src\IndexBuffer.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\stb_image.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Basic.shader" />
@@ -53,12 +56,21 @@
     <ClInclude Include="src\VertexBufferLayout.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="src\stb_image.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Notes\Axe.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
     <Image Include="Notes\Perspective.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="Textures\crusader.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="Textures\rouge.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
   </ItemGroup>
