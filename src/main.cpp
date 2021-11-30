@@ -152,7 +152,11 @@ int main(void)
         {
             {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
             {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
-            {{0.5f, -0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}}
+            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
+            {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}},
+            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {}, {}}
+
         };
 
         //Eq au tableau de triangles sur Unity
@@ -202,10 +206,6 @@ int main(void)
 
 
         //Desynchronisation des elements
-        /*GLCall(glBindVertexArray(0));
-        GLCall(glUseProgram(0));
-        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));*/
         float r = 0.0f;
         float increment = 0.05f;
         /* Loop until the user closes the window */
@@ -221,7 +221,7 @@ int main(void)
 
             //DrawCall de la fonction
             //GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
-            GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));//On met nullptr car on a bind le tableau d'indices
+            GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));//On met nullptr car on a bind le tableau d'indices
             if (r > 1.0f)
             {
                 increment = -0.05f;

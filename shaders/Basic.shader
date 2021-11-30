@@ -20,7 +20,10 @@ void main()
 in vec3 color_out;
 out vec4 new_c;
 
+uniform sampler2D color_texture;
+
 void main()
 {
-   new_c = vec4(color_out, 1);
+	//new_c = vec4(color_out, 1);
+	new_c = color_texture;
 };
