@@ -286,6 +286,7 @@ int main(void)
         float r = 0.0f;
         float increment = 0.05f;
         /* Loop until the user closes the window */
+        //Declaration des matrices de transformations
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -297,15 +298,24 @@ int main(void)
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+        //Envoi des matrices vers le shader avec des uniforms
+        int modelloc = glGetUniformLocation(shader, "model");
+        int viewloc = glGetUniformLocation(shader, "view");
+        int projectionloc = glGetUniformLocation(shader, "projection");
 
-
+        
 
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
+            glViewport(0, 0, 800, 600);
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
             glClearColor(1.0f, 0.2f, 0.2f, 1.0f);
             
+			glUniformMatrix4fv(modelloc, 1, GL_FALSE, glm::value_ptr(model));
+			glUniformMatrix4fv(viewloc, 1, GL_FALSE, glm::value_ptr(view));
+			glUniformMatrix4fv(projectionloc, 1, GL_FALSE, glm::value_ptr(projection));
+
             //GLCall(glUseProgram(shader));
             //GLCall(glBindVertexArray(vao));
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
