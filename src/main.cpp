@@ -207,7 +207,7 @@ int main(void)
 
         //Eq au tableau de triangles sur Unity
         std::vector<unsigned int> indices =
-        {
+        {//USED
             0, 1, 2,
             3, 0, 2
         };
