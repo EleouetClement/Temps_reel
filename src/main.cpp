@@ -1,8 +1,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -196,13 +197,13 @@ int main(void)
         //On a la même structure que sur les mesh Unity avec deux tableaux, un tableau de vertices et un d'index
         std::vector<Vertex> vertices =
         {
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
-            {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
-            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
-            {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
+            {{-0.5f, -0.5f, 1.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
+            {{0.5f, -0.5f, 1.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
+            {{0.5f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
+            {{-0.5f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
         };
 
-
+        
 
         //Eq au tableau de triangles sur Unity
         std::vector<unsigned int> indices =
@@ -285,6 +286,20 @@ int main(void)
         float r = 0.0f;
         float increment = 0.05f;
         /* Loop until the user closes the window */
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+        glm::mat4 view = glm::mat4(1.0f);
+
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        glm::mat4 projection;
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+
+
+
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
