@@ -200,7 +200,6 @@ int main(void)
             {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
             {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
             {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
-
         };
 
 
@@ -243,6 +242,7 @@ int main(void)
         const auto uvs = glGetAttribLocation(shader, "uvs_in");
         //const auto normals = glGetAttribLocation(shader, "normals_in");
         
+
         GLCall(glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(struct Vertex, Vertex::position)));
         //glVertexAttribPointer(indexCouleur, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::couleur));
         glVertexAttribPointer(uvs, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void *)offsetof(struct Vertex, Vertex::uvs));
@@ -263,13 +263,20 @@ int main(void)
 
         unsigned int texture;
         //Permet d'eviter le décalage lors de l'application de la texture.
-        glPixelStoref(GL_PACK_ALIGNMENT, 1);
+        
+
+        //Generation de la texture
         glCreateTextures(GL_TEXTURE_2D, 1, &texture);
         glTextureStorage2D(texture, 1, GL_RGB8, width, height);
-        glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-        
+		/*glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);*/
+        glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
         glBindTextureUnit(0, texture);
         
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
         unsigned int sampler = glGetUniformLocation(shader, "color_texture");
         glUniform1i(sampler, 0);
 

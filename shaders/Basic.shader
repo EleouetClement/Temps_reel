@@ -29,6 +29,6 @@ uniform sampler2D color_texture;
 void main()
 {
 	//new_c = vec4(color_out, 1);
+	//new_c = vec4(uvs_out, 0, 1);
 	new_c = texture(color_texture, uvs_out);
-		
 };
