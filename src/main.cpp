@@ -200,8 +200,6 @@ int main(void)
             {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
             {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
             {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
-			//{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
-			//{{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}}
 
         };
 
@@ -209,7 +207,7 @@ int main(void)
 
         //Eq au tableau de triangles sur Unity
         std::vector<unsigned int> indices =
-        {//UNUSED
+        {
             0, 1, 2,
             3, 0, 2
         };
@@ -292,7 +290,7 @@ int main(void)
 
             //DrawCall de la fonction
             //GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
-            GLCall(glDrawElements(GL_TRIANGLES, 0, 6));//On met nullptr car on a bind le tableau d'indices
+            GLCall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
             if (r > 1.0f)
             {
                 increment = -0.05f;
