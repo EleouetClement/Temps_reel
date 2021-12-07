@@ -200,24 +200,33 @@ int main(void)
             {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {}},
             {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}},
             {{-0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {}},
-            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
-            {{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}}
+			//{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {}},
+			//{{0.5f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {}}
 
         };
 
+
+
         //Eq au tableau de triangles sur Unity
-        unsigned int indices[6] =
-        {
+        std::vector<unsigned int> indices =
+        {//UNUSED
             0, 1, 2,
-            2, 3, 0
+            3, 0, 2
         };
 
         unsigned int vao;
         GLCall(glGenVertexArrays(1, &vao));
         GLCall(glBindVertexArray(vao));
 
+        //Generation et liaison de l'index buffer
+        unsigned int indexBuffer;
+        glGenBuffers(1, &indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+
         unsigned int vertexBuff;
-        //Declaration du buffer
+        //Declaration du VertexBuffer
         glGenBuffers(1, &vertexBuff);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);//Permet de specifier de que l'on veut voir affiché
 
@@ -225,17 +234,8 @@ int main(void)
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 
-       /* GLCall(glEnableVertexAttribArray(0));
-        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));*/
-
-        //IndexBuffer ib(indices, 6);
-
         ShaderSources source = ParseShader("shaders/Basic.shader");
 
-        /*std::cout << "VERTEX" << std::endl;
-        std::cout << source.VertexSource << std::endl;
-        std::cout << "FRAGMENT" << std::endl;
-        std::cout << source.FragmentSource << std::endl;*/
 
         unsigned int shader = createShader(source.VertexSource, source.FragmentSource);
         GLCall(glUseProgram(shader));
@@ -262,13 +262,16 @@ int main(void)
             std::cout << "Image non chargée!" << std::endl;
             return -1;
         }
+
         unsigned int texture;
+        //Permet d'eviter le décalage lors de l'application de la texture.
+        glPixelStoref(GL_PACK_ALIGNMENT, 1);
         glCreateTextures(GL_TEXTURE_2D, 1, &texture);
         glTextureStorage2D(texture, 1, GL_RGB8, width, height);
         glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-
+        
         glBindTextureUnit(0, texture);
-
+        
         unsigned int sampler = glGetUniformLocation(shader, "color_texture");
         glUniform1i(sampler, 0);
 
@@ -282,14 +285,14 @@ int main(void)
             /* Render here */
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
             glClearColor(1.0f, 0.2f, 0.2f, 1.0f);
-
+            
             //GLCall(glUseProgram(shader));
             //GLCall(glBindVertexArray(vao));
-            //ib.Bind();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
             //DrawCall de la fonction
             //GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));//On met nullptr car on a bind le tableau d'indices
-            GLCall(glDrawArrays(GL_TRIANGLES, 0, 6));//On met nullptr car on a bind le tableau d'indices
+            GLCall(glDrawElements(GL_TRIANGLES, 0, 6));//On met nullptr car on a bind le tableau d'indices
             if (r > 1.0f)
             {
                 increment = -0.05f;
