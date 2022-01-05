@@ -11,10 +11,50 @@ par exemple avant le **glDrawElements**
 Permet de lier des vertex buffers avec une specification 
 
 
+### Les textures 
 
-## Textures
+glTextureStorage2D(
+	texId,
+	level,(1) -> Quand on utilise une texture MitMap
+	inter,
+	width, 
+	height,
+	internalFormat,
+)
 
-Basiquement c'est une image que l'on peut utiliser quand on veut *render* un scene
+#### Texture MitMap
+
+Divisier une texture par deux jusqu'a ce que lorsqu'on
+obtienne un ensemble d'image qui prend la même place que 
+l'image originale. Cela sert a prendre une TexMap en fonction
+de la taille de l'image et permet de ne pas faire trop de calcul
+sur les texcels
+
+### glTex[ture]SubImage(
+	texId,
+	level = 0,
+	x0, -> offset
+	y0, -> offset
+	w,
+	h,
+	format,
+	type,
+	ptr -> données
+)
+
+### uniform sampler2D
+
+uniform sampler2D colorTexture;
+
+GLuint loc_texture_color = glProgramUniformLocation(prog, "colortexture");
 
 
 
+glUniform(loc_texturecolor, id_TextureUnit)
+
+glActiveTexure(GL_TEXTURE0 + id);
+glBindTexture2D(texId);
+
+ou
+
+glBindTextureUnit(uint unit, uint texture);

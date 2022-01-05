@@ -1,22 +1,40 @@
 #shader vertex
 #version 330 core
 
-layout(location = 0) in vec4 position;
+in vec3 position;
+//in vec3 color_in;
+in vec2 uvs_in;
+//in vec3 normals_in;
+
+
+out vec3 color_out;
+out vec2 uvs_out;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-   gl_Position = position;
+   //gl_Position = vec4(position, 1);
+   gl_Position = projection * view * model * vec4(position, 1.0);
+   //color_out = color_in;
+   uvs_out = uvs_in;
 };
 
 
 #shader fragment
 #version 330 core
 
-layout(location = 0) out vec4 color;
+//in vec3 color_out;
+in vec2 uvs_out;
+out vec4 new_c;
 
-uniform vec4 u_Color;
+uniform sampler2D color_texture;
 
 void main()
 {
-   color = u_Color;
+	//new_c = vec4(color_out, 1);
+	//new_c = vec4(uvs_out, 0, 1);
+	new_c = texture(color_texture, uvs_out);
 };
