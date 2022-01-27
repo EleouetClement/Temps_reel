@@ -287,7 +287,7 @@ int main(void)
         float increment = 0.05f;
         /* Loop until the user closes the window */
         //Declaration des matrices de transformations
-
+        //test
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
