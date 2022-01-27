@@ -42,7 +42,7 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
         severitystr = "UNKNOWN";
         break;
     }
-
+    //Ok
     std::cout << "[OPENGL " << severitystr << "](" << type << ") : " << message << std::endl;
 
     if (severity == GL_DEBUG_SEVERITY_MEDIUM || severity == GL_DEBUG_SEVERITY_HIGH) {
